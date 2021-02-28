@@ -1,0 +1,137 @@
+IORDACHE TIBERIU-MIHAI
+
+Task 1:
+
+-function [A, b] = generate probabilities system(rows):
+	La aceasta functie am urmat schema piramidei din enunt si am cautat 
+relatii intre elemente. Astfel, am gasit ca nr de linii al matricei este
+dat de rows * (rows + 1) / 2 (deoarece fiecare rand creste cu 1 fata de 
+cel precedent). Pt vectorul b a trebuit doar sa pun pe ultimele atatea
+poziti cate elemente sunt pe randul cel mai de jos din piramida, valori de 1.
+Am calculat cate elemente de 6 sunt in matrice(acestea se gasesc in 
+mijlocul piramidei si apareau doar daca piramida avea mai mult de 3 
+randuri). Am pus 5 pe toata diagonala matricei, iar dupa aceea am pus
+valorile de 4, ce reprezinta colturile piramidei. Am pus valorile de 6 in
+astfel incat acestea incep de la elementul 5 si cresc in functie de cate 
+randuri are matricea. Avand toata diagonala completa, incep sa pun valorile
+de -1 in matrie. Pt prima linie acestea vor fi mereu pe pozitia 2 si 3.
+Dupa aceea am impartit in 3 etape, parcurgerea elementelor de pe pe partea 
+stanga a piramidei, cele de pe partea dreapta si cele din mijloc. Pt 
+fiecare verificam valoare elementului de pe diag din linia respectiva 
+si adaugam atatia de -1 in pozitilie vecinilor (pozitii relative la 
+piramida). 
+
+-function [values, colind, rowptr] = matrix to csr(A):
+	- pt vectorul values am scos toate elementele nenule din matricea A
+transpusa(am folosit transpusa pt a pune in ordinea corecta elementele)
+
+	- pt vectorul colind am parcurs matricea A element cu element, iar pt
+fiecare element din A care se gaseste si in values, ii salvez indicele 
+in vectorul colind la pozitia idx (numar care este incremenetat de fiecare 
+data cand gasesc un element nenul din matrice) si de asemenea incremenetez
+valoarea de pe pozitia i a vectorului lungime(imi va fi de folos pt calcularea 
+lui rowptr)
+
+	- pt vectorul rowptr intial am creeat un vector ce contine primele 
+elemente de pe fiecare linie a matricei; Dupa aceea am parcurs vectorul 
+values si prim in paralel si de fiecare data cand acestea aveau aceeasi 
+valoare salvam indicele din values in rowptr, incremntam indexul lui prim cu
+1, iar cel al lui values cu cate elemente se aflau pe o linie din matrice.
+
+-function [G J, c J] = Jacobi factorization(A, b):
+	Am scos elementele de pe diag principala a matrcii A, am calculat P, 
+dupa care am calculat matricea de iteratie G_J si vectorul de iteratie c_J.
+
+-function [x] = Jacobi sparse(G values, G colind, G rowptr, c, tol):
+	La aceasta functie  am pornit cu un vector initial de lungime n(nr 
+liniilor din matrice) si am calculat x folosind functia de multiplicare
+deja implementata. Dupa ce am calculat x, am calculat eroarea, daca aceasta 
+era mai mare sau egala cu toleranta, inseamna ca am gasit solutia.
+
+
+
+Task 2:
+
+-function [centroids] = clustering pc(points, NC):
+	La aceasta functie intai am initializat  matricea cluster si am format
+primul centroid. Dupa aceea am luat fiecare punct si calculam de care
+centroid este mai aproape si ii salvam pozitia in linia grupului 
+corespunzatoare centroidului respectiv. Repetam acest pas pana cand poztia 
+centroidului nu se mai schimba.
+
+-function [cost] = compute cost pc(points, centroids):
+	Analog cu primul task, am luat fiecare punct si ii calculam distanta 
+pana la fiecare centroid, iar pe cea mai mica o adaugam la cost.
+
+
+
+Task 3;
+
+-function [sol] = rgbHistogram(path to image, count bins):
+	La aceasta functie am citit matricea folosit imread si imi returneaza o 
+matrice tridimensionala, fiecare fiind una dintre culori R G B. Asadar, 
+creez pt fiecare culoare in parte histograma conform intervalului, dupa care
+atasez vectorii rezultati in solutie.
+
+-function [H, S, V] = RGB2HSV(R, G, B):
+	Algoritmul dat, vectorizat in care am locuit conditiile if cu 
+H(conditie), pt a eficientiza algoritmul si pt a nu folosi for.
+
+-function [sol] = hsvHistogram(path to image, count bins):
+	Analog cu functia rgb, doar ca apelez inainte de realizarea histogramei
+functia de conversie rgb2hsv.
+
+-function [Q, R] = Householder(A):
+	La aceasta functie am urmat alogirtmul prezentat la laborator, am
+parcurs fiecare coloana din A, calculam vectoul vp, care la pozitia p
+avea termenul App + sigma_p, iar in rest Aip. Dupa ce am construit vectorul,
+calculam reflectorul householder si actualizam A si Q. La final, R este 
+ultima valoare a lui A.
+
+-function [x] = SST(A, b):
+	La acest task am luat fiecare caz posibil, in functie de dimensiunile
+matricii date ca parametru, dupa care am calcula ultima componenta a 
+solutiei si am parcurs de jos in sus sistem rezolvand fiecare linie.
+
+-function [X, y] = preprocess(path to dataset, histogram, count bins):
+	Am format calea catre fiecare poza(cu pisici sau fara) si dupa care am
+realizat histograma pt fiecare poza, folosindu-ma de 2 for-ur, unul pt 
+pozele cu pisic, altul pt cele fara, dupa care o puneam pe o linie a 
+matricii A.
+
+-function [w] = learn(X, y):
+	Am format matricea X_til concatenand o coloana de 1, am descompus
+matricea, dupa care am rezolvat sistemul folosindu ma de functia SST deja
+implementata.
+
+-function [percentage] = evaluate(path to testset, w, histogram, count bins):
+	Prepocesez imaginile si formez matricea X_til dupa care parcurg
+fiecare linie din matrice si ii verific clasa din care face parte. Daca
+imaginea a fost prezisa corect, cresc contorul. La final, procentul este 
+dat de nr de poze prezise corect supra nr total de poze.
+
+
+
+Task 4:
+
+-function [w] = learn(X, y, lr, epochs):
+	Pentru inceput am scalat matricea si i am adaugat coloana de 1. Dupa 
+ce am actualizat dimensiunile actuale, am generat vectorul random w, 
+folosindu ma de operatia  -0.1 + (0.1 + 0.1) * rand(coloane, 1) deoarce
+functia randi pe care am vrut sa o folosesc initial prima la capetele de 
+interval doar valori intregi. Repet de epochs ori modificarea lui w, prin
+care iau 64 de linii random folosind un vector de pozitie care il generez
+cu functia randperm, iar apoi selectez vectorii x si y folosindu ma de 
+vec_poz. In final actualizez valoarea lui w de la pozitia i.
+
+-function [percentage] = evaluate(path to testset, w, histogram, count bins):
+	Analog cu functia precedenta de evaluate, doar ca scalez matricea x
+inainte de a calcula procentele.
+
+
+
+
+
+
+	
+
